@@ -3,14 +3,12 @@ library(bslib)
 library(tidyr)
 library(tidyverse)
 library(dplyr)
-library(ggplot2)
 library(sass)
 library(leaflet)
 library(sp)
 library(igraph)
 library(rmarkdown)
 
-setwd("~/GitHub/bus-network/")
 dataset <- readRDS("dataset.RDS")
 vertbus <- readRDS("vertbus.RDS")
 edges <- readRDS("edges.RDS")
@@ -50,6 +48,8 @@ server <- function(input, output){
         observe({
             
             peso <- input$Pesos
+            if (is.null(peso))             
+                return()
         
             mybins <- quantile(vertbus$avg)
             pal <- colorBin(palette = "Purples", domain = vertbus$avg, na.color="transparent", alpha = 0.9, bins = mybins)
@@ -68,7 +68,7 @@ server <- function(input, output){
                 addLegend( pal=pal, values=~avg, opacity=0.9, title = "Saldo", position = "bottomright", group="Saldo") %>% 
                 addLegend( pal=pal1, values=~avg1, opacity=0.9, title = "Desembarque", position = "bottomright", group="Desembarque" ) %>%
                 addLegend( pal=pal2, values=~avg2, opacity=0.9, title = "Embarque", position = "bottomright", group="Embarque" ) %>%
-                addLayersControl(overlayGroups = peso)
+                addLayersControl(overlayGroups = peso, options = layersControlOptions(collapsed = FALSE))
         
          })
 }
